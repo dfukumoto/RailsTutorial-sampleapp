@@ -7,7 +7,7 @@ development:
   adapter: postgresql
   host: localhost
   encoding: utf8
-  database: sampleapp
+  database: sampleapp_dev
   username: dfukumoto
   password: Horn5728!!
   pool: 5
@@ -20,7 +20,7 @@ test:
   adapter: postgresql
   host: localhost
   encoding: utf8
-  database: sampleapp
+  database: sampleapp_test
   username: dfukumoto
   password: Horn5728!!
   pool: 5
