@@ -110,5 +110,18 @@ describe "AuthenticationPages" do
 				specify { expect(response).to redirect_to(root_path) }
 			end
 		end
+
+		describe "as admin user" do
+			let(:admin_user) { FactoryGirl.create(:user) }
+			before do
+				admin_user.admin = true
+				sign_in admin_user, no_capybara: true
+				delete user_path(admin_user)
+			end
+
+			specify { expect(response).to redirect_to(root_path) }
+
+
+		end
 	end
 end
