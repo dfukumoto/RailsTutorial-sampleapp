@@ -24,7 +24,6 @@ describe "AuthenticationPages" do
 
 				it { should_not have_selector('div.alert.alert-error') }
 			end
-
 		end
 
 		describe "with valid information" do
@@ -41,6 +40,24 @@ describe "AuthenticationPages" do
 			describe "followed by signout" do
 				before { click_link "Sign out" }
 				it { should have_link('Sign in') }
+			end
+		end
+
+		describe "incorrect access" do
+			let(:user) { FactoryGirl.create(:user) }
+			before { sign_in user, no_capybara: true }
+
+			describe "submitting a GET request to the Users#new action" do
+				before { get new_user_path }
+				specify { expect(response).to redirect_to(root_path) }
+			end
+
+			describe "submitting a POST request to the Users#create action" do
+				let(:params) do
+					{ user: { name: "TEST USER1", email: "testuser1@example.com", password: "testuser1", password_confirmation: "testuser1" } }
+				end
+				before { post users_path(params) }
+				specify { expect(response).to redirect_to(root_path) }
 			end
 		end
 	end
