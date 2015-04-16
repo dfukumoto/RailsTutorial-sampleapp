@@ -22,6 +22,11 @@ class User < ActiveRecord::Base
 		Digest::SHA1.hexdigest(token.to_s)
 	end
 
+	def feed
+		# このコードは準備段階．
+		Micropost.where("user_id = ?", id)
+	end
+
 	private
 
 		def create_remember_token
