@@ -59,7 +59,6 @@ describe "UserPages" do
 		let!(:m1) { FactoryGirl.create(:micropost, user: user, content: "Foo") }
 		let!(:m2) { FactoryGirl.create(:micropost, user: user, content: "Bar") }
 
-		# ユーザ変数を作成するためのコードに置き換える．
 		before { visit user_path(user) }
 
 		it { should have_content(user.name) }
