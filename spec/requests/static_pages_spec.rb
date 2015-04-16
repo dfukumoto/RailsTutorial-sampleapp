@@ -32,6 +32,28 @@ describe "Static Pages" do
 				end
 			end
 		end
+
+		describe "should render micropost count" do
+			let(:user) { FactoryGirl.create(:user) }
+			describe "many microposts count" do
+				before do
+					FactoryGirl.create(:micropost, user: user, content: "Lorem ipsum")
+					FactoryGirl.create(:micropost, user: user, content: "Dolor sit amet")
+					sign_in user
+					visit root_path
+				end			
+				it { should have_selector("span", text: /#{user.microposts.count} microposts/) }
+			end
+
+			describe "a micropost count" do
+				before do
+					FactoryGirl.create(:micropost, user: user, content: "Lorem ipsum")
+					sign_in user
+					visit root_path
+				end
+				it { should have_selector("span", text: /#{user.microposts.count} micropost$/) }
+			end
+		end
 	end
 
 	describe "Help page" do
