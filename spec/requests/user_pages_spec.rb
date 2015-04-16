@@ -56,6 +56,7 @@ describe "UserPages" do
 
 	describe "profile page" do
 		let(:user) { FactoryGirl.create(:user) }
+		let(:other_user) { FactoryGirl.create(:user) }
 		let!(:m1) { FactoryGirl.create(:micropost, user: user, content: "Foo") }
 		let!(:m2) { FactoryGirl.create(:micropost, user: user, content: "Bar") }
 
@@ -68,6 +69,17 @@ describe "UserPages" do
 			it { should have_content(m1.content) }
 			it { should have_content(m2.content) }
 			it { should have_content(user.microposts.count) }
+		end
+
+		describe "non render delete link" do
+			before do
+				sign_in user, no_capybara: true
+				visit user_path(other_user)
+			end
+
+			it { should_not have_link('delete', href: user_path(other_user)) }
+			it { should_not have_link('delete', href: user_path(user)) }
+
 		end
 	end
 
