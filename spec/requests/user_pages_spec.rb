@@ -69,6 +69,18 @@ describe "UserPages" do
 			it { should have_content(m2.content) }
 			it { should have_content(user.microposts.count) }
 		end
+
+		describe "pagination" do
+			before(:all) { 30.times { FactoryGirl.create(:micropost) } }
+			after(:all) { User.delete_all }
+
+			it { should have_selector("ol.microposts") }
+			it "should list each user" do
+				user.microposts.paginate(page: 1).each do |micropost|
+					expect(page).to have_selector("span#content_#{micropost.id}", text: micropost.content)
+				end
+			end
+		end
 	end
 
 	describe "signup" do
