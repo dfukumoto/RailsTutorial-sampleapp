@@ -16,6 +16,7 @@ describe User do
 	it { should respond_to(:admin) }
 	it { should respond_to(:microposts) }
 	it { should respond_to(:feed) }
+	it { should respond_to(:relationships) }
 
 	it { should be_valid }
 	it { should_not be_admin }
@@ -86,7 +87,7 @@ describe User do
 	end
 
 	describe "when password doesnt match confirmation" do
-		before do 
+		before do
 			@user.password_confirmation = "mismatch"
 		end
 
@@ -94,7 +95,7 @@ describe User do
 	end
 
 	describe "return value of authenticate method" do
-		before do 
+		before do
 			@user.save
 		end
 		let(:found_user) { User.find_by(email: @user.email) }
