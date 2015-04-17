@@ -31,7 +31,19 @@ describe "Static Pages" do
 					expect(page).to have_selector("li##{item.id}", text: item.content)
 				end
 			end
+
+			describe "follwer/following counts" do
+				let(:other_user) { FactoryGirl.create(:user) }
+				before do
+					other_user.follow!(user)
+					visit root_path
+				end
+
+				it { should have_link("0 following", href: following_user_path(user)) }
+				it { should have_link("1 followers", href: followers_user_path(user)) }
+			end
 		end
+	end
 
 		describe "should render micropost count" do
 			let(:user) { FactoryGirl.create(:user) }
@@ -41,7 +53,7 @@ describe "Static Pages" do
 					FactoryGirl.create(:micropost, user: user, content: "Dolor sit amet")
 					sign_in user
 					visit root_path
-				end			
+				end
 				it { should have_selector("span", text: /#{user.microposts.count} microposts/) }
 			end
 
@@ -54,7 +66,6 @@ describe "Static Pages" do
 				it { should have_selector("span", text: /#{user.microposts.count} micropost$/) }
 			end
 		end
-	end
 
 	describe "Help page" do
 		before { visit help_path }
