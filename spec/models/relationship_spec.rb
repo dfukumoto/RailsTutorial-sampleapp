@@ -25,4 +25,16 @@ describe Relationship do
     before { relationship.follower_id = nil }
     it { should_not be_valid }
   end
+
+  describe "when destroy user" do
+    let(:user) { FactoryGirl.create(:user) }
+    let(:other_user) { FactoryGirl.create(:user) }
+    before { user.follow!(other_user) }
+
+    it "should delete relationships" do
+      expect do
+        user.destroy
+      end.to change(Relationship, :count).by(-1)
+    end
+  end
 end
