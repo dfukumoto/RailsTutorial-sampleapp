@@ -69,19 +69,69 @@ describe "UserPages" do
 			it { should have_content(m2.content) }
 			it { should have_content(user.microposts.count) }
 		end
+	end
 
-		describe "pagination" do
-			before(:all) { 30.times { FactoryGirl.create(:micropost) } }
+	describe "pagination" do
+		let(:user) { FactoryGirl.create(:user) }
+		describe "Boundary value" do
+			describe "30 less" do
+				before(:all) { 30.times { FactoryGirl.create(:micropost, user: user) } }
+				after(:all) { User.delete_all }
+				before { visit user_path(user) }
+
+				it { should have_selector("ol.microposts") }
+				it { should_not have_selector("div.pagination") }
+				it "should list each micropost" do
+					user.microposts.paginate(page: 1).each do |micropost|
+						expect(page).to have_selector("span#content_#{micropost.id}", text: micropost.content)
+					end
+				end
+			end
+			describe "more than 30" do
+				before(:all) { 31.times { FactoryGirl.create(:micropost, user: user) } }
+				after(:all) { User.delete_all }
+				before { visit user_path(user) }
+
+				it { should have_selector("ol.microposts") }
+				it { should have_selector("div.pagination") }
+				it "should list each micropost" do
+					user.microposts.paginate(page: 1).each do |micropost|
+						expect(page).to have_selector("span#content_#{micropost.id}", text: micropost.content)
+					end
+				end
+			end
+
+			describe "a micropost" do
+				let!(:m1) { FactoryGirl.create(:micropost, user: user, content: "Foo") }
+				before { visit user_path(user) }
+
+				it { should have_selector("ol.microposts") }
+				it { should_not have_selector("div.pagination") }
+				it "should list each micropost" do
+					user.microposts.paginate(page: 1).each do |micropost|
+						expect(page).to have_selector("span#content_#{micropost.id}", text: micropost.content)
+					end
+				end
+			end
+		end
+
+		describe "31 more 60 less" do
+			before(:all) { 61.times { FactoryGirl.create(:micropost, user: user) } }
 			after(:all) { User.delete_all }
+			before do
+				visit user_path(user)
+				click_link("Next")
+			end
 
 			it { should have_selector("ol.microposts") }
-			it "should list each user" do
-				user.microposts.paginate(page: 1).each do |micropost|
+			it "should list each micropost" do
+				user.microposts.paginate(page: 2).each do |micropost|
 					expect(page).to have_selector("span#content_#{micropost.id}", text: micropost.content)
 				end
 			end
 		end
 	end
+
 
 	describe "signup" do
 		before { visit signup_path }
